@@ -1,23 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BMP_HEADER_SIZE 64
-#define BMP_COLOR_TABLE_SIZE 1024
-#define CUSTOM_IMG_SIZE 1024*1024
+#define BMP_HEADER_SIZE         54
+#define BMP_COLOR_TABLE_SIZE    1024
+#define CUSTOM_IMG_SIZE         1024*1024
 
-void ImageWriter(const char *imgName,
+void  imageReader(const char *imgName,
+                  int *_height,
+                  int *_width,
+                  int *_bitDepth,
+                  unsigned char *_header,
+                  unsigned char *_colorTable,
+                  unsigned char *_buf
+                  );
+ void imageWriter(const char *imgName,
                  unsigned char *header,
                  unsigned char *colorTable,
-                 unsigned char buf,
-                 int bitDepth);
-
-void imageReader(const char *imgName,
-                 int *_height,
-                 int *_width,
-                 int *_bitDepth,
-                 unsigned char *_header,
-                 unsigned char *_colorTable,
-                 unsigned char *_buf);
+                 unsigned char *buf,
+                 int bitDepth) ;
 
 
 int main()
@@ -79,7 +79,7 @@ void imageReader(const char *imgName,
 void ImageWriter(const char *imgName,
                  unsigned char *header,
                  unsigned char *colorTable,
-                 unsigned char buf,
+                 unsigned char *buf,
                  int bitDepth)
 {
     FILE *fo = fopen(imgName,"wb");
