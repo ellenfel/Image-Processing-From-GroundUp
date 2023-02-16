@@ -33,6 +33,8 @@ int main()
     imageReader(imgName,&imgWidth,&imgHeight,&imgBitDepth,&imgHeader[0],&imgColorTable[0], &imgBuffer[0]);
     ImageWriter(newImgName,imgHeader,imgColorTable,imgBuffer,imgBitDepth);
 
+    printf("Success \n");
+
     return 0;
 }
 
