@@ -1,48 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WHITE       255
-#define BLACK       0
-#define TRESHOLD    150
+#define WHITE   255
+#define BLACK   0
+#define THRESHOLD   50
 
-#define BMP_HEADER_SIZE         54
-#define BMP_COLOR_TABLE_SIZE    1024
 
 int main()
 {
-    FILE *fIn = ("lighthouse.bmp","rb");
-    FILE *fOut = ("lighthouse_bw.bmp","wb");
 
-    unsigned char imgHeader[BMP_HEADER_SIZE];
-    unsigned char colorTable[BMP_COLOR_TABLE_SIZE];
+   FILE *fIn = fopen("images/lighthouse.bmp","rb");
+   FILE *fOut = fopen("images/lighthouse_bw2.bmp","wb");
 
-    if(fIn=NULL){printf("Unable to open image \n");}
+   unsigned  char imgHeader[54];
+   unsigned  char colorTable[1024];
 
-    fwrite(imgHeader,sizeof(unsigned char),BMP_HEADER_SIZE,fOut);
+   if(fIn == NULL)
+   {
+       printf("Unable to open image \n");
+   }
 
-    //Extracting info aboout image from Header
-    int height = *(int *)&imgHeader[22];
-    int width  = *(int *)&imgHeader[18];
-    int BitDepth  = *(int *)&imgHeader[28];
+   for(int i=0;i<54;i++)
+   {
+       imgHeader[i] = getc(fIn);
+   }
 
-    int imgSize = height*width;
+   fwrite(imgHeader,sizeof(unsigned char),54,fOut);
 
-    //Sorting out the Color Table
-    if(BitDepth<=8)
+   int height = *(int*)&imgHeader[22];
+   int width  = *(int*)&imgHeader[18];
+   int bitDepth = *(int *)&imgHeader[28];
+
+   int imgSize = height * width;
+
+   if(bitDepth<=8)
+   {
+       fread(colorTable, sizeof(unsigned char),1024,fIn);
+       fwrite(colorTable,sizeof(unsigned char),1024,fOut);
+   }
+
+   unsigned char buffer[imgSize];
+   fread(buffer,sizeof(unsigned char),imgSize,fIn);
+
+    //Black and White converter
+    for(int i =0;i<imgSize;i++)
     {
-        fread(colorTable, sizeof(unsigned char), BMP_COLOR_TABLE_SIZE,fIn);
-        fwrite(colorTable,sizeof(unsigned char),BMP_COLOR_TABLE_SIZE,fOut);
+        buffer[i] = (buffer[i]>THRESHOLD)? WHITE : BLACK;
     }
 
-    //Sorting out the pixsel data
-    unsigned char buffer[imgSize];
-    fread(buffer, sizeof(unsigned char), imgSize,fIn);
-    for(int i = 0; i<imgSize;i++)
-    {
-        buffer[i] = (buffer[i]>TRESHOLD)?WHITE:BLACK;
-    }
-    
-    fwrite(buffer,sizeof(unsigned char),imgSize,fOut);
+    fwrite(buffer,sizeof(unsigned char), imgSize,fOut);
     fclose(fIn);
     fclose(fOut);
     return 0;
