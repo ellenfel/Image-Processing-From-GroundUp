@@ -39,6 +39,42 @@ int main()
         buffer[i][1] = getc(fIn);
         buffer[i][0] = getc(fIn);
    }
+
+    float kernel[3][3] = {{1.0/9.0, 1.0/9.0,1.0/9.0},
+                          {1.0/9.0, 1.0/9.0,1.0/9.0},
+                          {1.0/9.0, 1.0/9.0,1.0/9.0}
+                            };
+    
+    for(int x =1 ;x<height-1;x++)
+    {
+        for(int y =1;y<width -1;y++)
+        {
+            float sum0 = 0.0;
+            float sum1 = 0.0;
+            float sum2 = 0.0;
+            for(int i =-1;i<=1;i++)
+            {
+                for(int j=-1;j<=1;j++)
+                {
+                    sum0  = sum0 + (float)kernel[i+1][j+1]*buffer[(x+i)*width+(y+j)][0];
+                    sum1  = sum1 + (float)kernel[i+1][j+1]*buffer[(x+i)*width+(y+j)][1];
+                    sum2  = sum2 + (float)kernel[i+1][j+1]*buffer[(x+i)*width+(y+j)][2];
+
+                }
+            }
+
+            out_buffer[(x)*width+(y)][0] =  sum0;
+            out_buffer[(x)*width+(y)][1] =  sum1;
+            out_buffer[(x)*width+(y)][2] =  sum2;
+        }
+    }
+
+    for(int i =0;i<imgSize;i++)
+    {
+        putc(out_buffer[i][2],fOut);
+        putc(out_buffer[i][1],fOut);
+        putc(out_buffer[i][0],fOut);
+    }
    
    
    return 0;
